@@ -1,0 +1,15 @@
+syntax = "proto3";
+package torram.btcstaking;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "torram/x/btcstaking/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "torram/x/btcstaking/Params";
+  option (gogoproto.equal) = true;
+
+  
+}

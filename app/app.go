@@ -75,7 +75,9 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
+	btcstakingmodulekeeper "torram/x/btcstaking/keeper"
 	torrammodulekeeper "torram/x/torram/keeper"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"torram/docs"
@@ -141,7 +143,8 @@ type App struct {
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedKeepers             map[string]capabilitykeeper.ScopedKeeper
 
-	TorramKeeper torrammodulekeeper.Keeper
+	TorramKeeper     torrammodulekeeper.Keeper
+	BtcstakingKeeper btcstakingmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -246,6 +249,7 @@ func New(
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
 		&app.TorramKeeper,
+		&app.BtcstakingKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	); err != nil {
 		panic(err)

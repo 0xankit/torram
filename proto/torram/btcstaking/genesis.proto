@@ -1,0 +1,17 @@
+syntax = "proto3";
+package torram.btcstaking;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "torram/btcstaking/params.proto";
+
+option go_package = "torram/x/btcstaking/types";
+
+// GenesisState defines the btcstaking module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
