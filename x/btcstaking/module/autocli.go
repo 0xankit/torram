@@ -17,6 +17,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "params",
 					Short:     "Shows the parameters of the module",
 				},
+				{
+					RpcMethod:      "GetStakedBtc",
+					Use:            "get-staked-btc [trx-id] [vout]",
+					Short:          "Query getStakedBTC",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "trxId"}, {ProtoField: "vout"}},
+				},
+
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
@@ -27,6 +34,18 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				{
 					RpcMethod: "UpdateParams",
 					Skip:      true, // skipped because authority gated
+				},
+				{
+					RpcMethod:      "StakeBtc",
+					Use:            "stake-btc [tx-id] [vout]",
+					Short:          "Send a stakeBTC tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "tx_id"}, {ProtoField: "vout"}},
+				},
+				{
+					RpcMethod:      "UnstakeBtc",
+					Use:            "unstake-btc [tx-id] [vout]",
+					Short:          "Send a unstakeBTC tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "tx_id"}, {ProtoField: "vout"}},
 				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},

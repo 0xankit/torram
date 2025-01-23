@@ -1,0 +1,24 @@
+syntax = "proto3";
+package torram.btcstaking;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "torram/x/btcstaking/types";
+
+message UTXO {
+  string tx_id = 1;               // Transaction ID
+  uint32 vout = 2;                // Output index
+  string address = 3;             // Owner's address
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];  // Amount in tokens
+  uint64 confirmations = 5;       // Number of confirmations
+  string script_pub_key = 6;      // ScriptPubKey
+  bool spendable = 7;             // Whether the UTXO is spendable
+  bool safe = 8;                  // Whether the UTXO is safe to spend
+  uint64 lock_time = 9;           // Block height or timestamp until unlock
+  bool is_staked = 10;            // Whether the UTXO is staked
+}
+
+message StakingPool {
+  repeated UTXO utxos = 1; // List of staked UTXOs
+}

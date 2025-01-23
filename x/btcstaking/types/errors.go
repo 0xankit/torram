@@ -8,6 +8,8 @@ import (
 
 // x/btcstaking module sentinel errors
 var (
-	ErrInvalidSigner = sdkerrors.Register(ModuleName, 1100, "expected gov account as only signer for proposal message")
-	ErrSample        = sdkerrors.Register(ModuleName, 1101, "sample error")
+	ErrUTXONotFound      = sdkerrors.Register(ModuleName, 1100, "UTXO not found")
+	ErrUTXOAlreadyStaked = sdkerrors.Register(ModuleName, 1101, "UTXO is already staked")
+	ErrUTXONotStaked     = sdkerrors.Register(ModuleName, 1102, "UTXO is not staked")
+	ErrInvalidSigner     = sdkerrors.Register(ModuleName, 1103, "invalid signer")
 )

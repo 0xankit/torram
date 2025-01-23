@@ -23,7 +23,15 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgStakeBtc = "op_weight_msg_stake_btc"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgStakeBtc int = 100
+
+	opWeightMsgUnstakeBtc = "op_weight_msg_unstake_btc"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUnstakeBtc int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -46,6 +54,28 @@ func (am AppModule) RegisterStoreDecoder(_ simtypes.StoreDecoderRegistry) {}
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
+	var weightMsgStakeBtc int
+	simState.AppParams.GetOrGenerate(opWeightMsgStakeBtc, &weightMsgStakeBtc, nil,
+		func(_ *rand.Rand) {
+			weightMsgStakeBtc = defaultWeightMsgStakeBtc
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgStakeBtc,
+		btcstakingsimulation.SimulateMsgStakeBtc(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUnstakeBtc int
+	simState.AppParams.GetOrGenerate(opWeightMsgUnstakeBtc, &weightMsgUnstakeBtc, nil,
+		func(_ *rand.Rand) {
+			weightMsgUnstakeBtc = defaultWeightMsgUnstakeBtc
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUnstakeBtc,
+		btcstakingsimulation.SimulateMsgUnstakeBtc(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -54,6 +84,22 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 // ProposalMsgs returns msgs used for governance proposals for simulations.
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgStakeBtc,
+			defaultWeightMsgStakeBtc,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				btcstakingsimulation.SimulateMsgStakeBtc(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgUnstakeBtc,
+			defaultWeightMsgUnstakeBtc,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				btcstakingsimulation.SimulateMsgUnstakeBtc(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
 		// this line is used by starport scaffolding # simapp/module/OpMsg
 	}
 }

@@ -8,7 +8,6 @@ package btcstaking
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -21,6 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Msg_UpdateParams_FullMethodName = "/torram.btcstaking.Msg/UpdateParams"
+	Msg_StakeBtc_FullMethodName     = "/torram.btcstaking.Msg/StakeBtc"
+	Msg_UnstakeBtc_FullMethodName   = "/torram.btcstaking.Msg/UnstakeBtc"
 )
 
 // MsgClient is the client API for Msg service.
@@ -30,6 +31,8 @@ type MsgClient interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	StakeBtc(ctx context.Context, in *MsgStakeBtc, opts ...grpc.CallOption) (*MsgStakeBtcResponse, error)
+	UnstakeBtc(ctx context.Context, in *MsgUnstakeBtc, opts ...grpc.CallOption) (*MsgUnstakeBtcResponse, error)
 }
 
 type msgClient struct {
@@ -49,6 +52,24 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) StakeBtc(ctx context.Context, in *MsgStakeBtc, opts ...grpc.CallOption) (*MsgStakeBtcResponse, error) {
+	out := new(MsgStakeBtcResponse)
+	err := c.cc.Invoke(ctx, Msg_StakeBtc_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UnstakeBtc(ctx context.Context, in *MsgUnstakeBtc, opts ...grpc.CallOption) (*MsgUnstakeBtcResponse, error) {
+	out := new(MsgUnstakeBtcResponse)
+	err := c.cc.Invoke(ctx, Msg_UnstakeBtc_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -56,6 +77,8 @@ type MsgServer interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	StakeBtc(context.Context, *MsgStakeBtc) (*MsgStakeBtcResponse, error)
+	UnstakeBtc(context.Context, *MsgUnstakeBtc) (*MsgUnstakeBtcResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -65,6 +88,12 @@ type UnimplementedMsgServer struct {
 
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (UnimplementedMsgServer) StakeBtc(context.Context, *MsgStakeBtc) (*MsgStakeBtcResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StakeBtc not implemented")
+}
+func (UnimplementedMsgServer) UnstakeBtc(context.Context, *MsgUnstakeBtc) (*MsgUnstakeBtcResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnstakeBtc not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -97,6 +126,42 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_StakeBtc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgStakeBtc)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).StakeBtc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_StakeBtc_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).StakeBtc(ctx, req.(*MsgStakeBtc))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UnstakeBtc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnstakeBtc)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnstakeBtc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UnstakeBtc_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnstakeBtc(ctx, req.(*MsgUnstakeBtc))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -107,6 +172,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "StakeBtc",
+			Handler:    _Msg_StakeBtc_Handler,
+		},
+		{
+			MethodName: "UnstakeBtc",
+			Handler:    _Msg_UnstakeBtc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

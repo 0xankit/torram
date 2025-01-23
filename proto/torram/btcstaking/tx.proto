@@ -1,8 +1,10 @@
 syntax = "proto3";
+
 package torram.btcstaking;
 
 import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "torram/btcstaking/params.proto";
@@ -15,26 +17,64 @@ service Msg {
 
   // UpdateParams defines a (governance) operation for updating the module
   // parameters. The authority defaults to the x/gov module account.
-  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc UpdateParams (MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc StakeBtc     (MsgStakeBtc    ) returns (MsgStakeBtcResponse    );
+  rpc UnstakeBtc   (MsgUnstakeBtc  ) returns (MsgUnstakeBtcResponse  );
 }
-
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
-  option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "torram/x/btcstaking/MsgUpdateParams";
+  option (cosmos.msg.v1.signer) =                           "authority";
+  option           (amino.name) = "torram/x/btcstaking/MsgUpdateParams";
 
   // authority is the address that controls the module (defaults to x/gov unless overwritten).
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // params defines the module parameters to update.
-  //
+
   // NOTE: All parameters must be supplied.
-  Params params = 2 [
-    (gogoproto.nullable) = false,
-    (amino.dont_omitempty) = true
-  ];
+  Params params = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
 }
 
 // MsgUpdateParamsResponse defines the response structure for executing a
 // MsgUpdateParams message.
 message MsgUpdateParamsResponse {}
+
+// MsgStakeBtc is the message type for staking a UTXO.
+message MsgStakeBtc {
+  // from is the address of the user staking the UTXO.
+  string from = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // tx_id is the transaction ID of the UTXO to be staked.
+  string tx_id = 2;
+
+  // vout is the output index of the UTXO to be staked.
+  uint32 vout = 3;
+
+  // amount is the amount of the UTXO to be staked.
+  cosmos.base.v1beta1.Coin amount = 4 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  option (cosmos.msg.v1.signer) = "from";
+}
+
+// MsgStakeBtcResponse defines the response structure for MsgStakeBtc.
+message MsgStakeBtcResponse {}
+
+// MsgUnstakeBtc is the message type for unstaking a UTXO.
+message MsgUnstakeBtc {
+  // from is the address of the user unstaking the UTXO.
+  string from = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // tx_id is the transaction ID of the UTXO to be unstaked.
+  string tx_id = 2;
+
+  // vout is the output index of the UTXO to be unstaked.
+  uint32 vout = 3;
+
+  option (cosmos.msg.v1.signer) = "from";
+}
+
+// MsgUnstakeBtcResponse defines the response structure for MsgUnstakeBtc.
+message MsgUnstakeBtcResponse {}
