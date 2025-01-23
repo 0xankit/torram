@@ -30,5 +30,14 @@ func (k msgServer) StakeBtc(goCtx context.Context, msg *types.MsgStakeBtc) (*typ
 	}
 	k.Keeper.SetUTXO(ctx, utxo)
 
+	// emit Event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeStake,
+			sdk.NewAttribute(types.AttributeKeyTxID, msg.TxId),
+			sdk.NewAttribute(types.AttributeUtxo, utxo.String()),
+		),
+	)
+
 	return &types.MsgStakeBtcResponse{}, nil
 }

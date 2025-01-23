@@ -26,5 +26,14 @@ func (k msgServer) UnstakeBtc(goCtx context.Context, msg *types.MsgUnstakeBtc) (
 	utxo.IsStaked = false
 	k.Keeper.SetUTXO(ctx, utxo)
 
+	// emit Event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeUnstake,
+			sdk.NewAttribute(types.AttributeKeyTxID, msg.TxId),
+			sdk.NewAttribute(types.AttributeUtxo, utxo.String()),
+		),
+	)
+
 	return &types.MsgUnstakeBtcResponse{}, nil
 }

@@ -298,6 +298,9 @@ func New(
 		return nil, err
 	}
 
+	// Run btc relayer
+	app.StartRelayer()
+
 	return app, nil
 }
 
