@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// StakeBtc defines a method for staking a UTXO, If the UTXO is already staked, it returns an error. It emits a Stake event
 func (k msgServer) StakeBtc(goCtx context.Context, msg *types.MsgStakeBtc) (*types.MsgStakeBtcResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -19,16 +20,24 @@ func (k msgServer) StakeBtc(goCtx context.Context, msg *types.MsgStakeBtc) (*typ
 		//TODO: Update stake logic
 		return nil, types.ErrUTXOAlreadyStaked
 	}
-	// Stake the UTXO
+	// Record the UTXO
 
 	utxo = types.UTXO{
 		TxId:     msg.TxId,
 		Vout:     msg.Vout,
-		Amount:   msg.GetAmount(),
+		Amount:   msg.GetAmount(), // This is not original UTXO amount, but the amount to be staked
 		Address:  msg.From,
 		IsStaked: true,
 	}
 	k.Keeper.SetUTXO(ctx, utxo)
+
+	// TODO: can use hooks to stake after it is saved in the store instead of doing it here
+	// mint the UTXO with the staking amount
+	var mintCoins sdk.Coins
+	mintCoins = mintCoins.Add(msg.GetAmount())
+	if err := k.Keeper.bankKeeper.MintCoins(ctx, types.ModuleName, mintCoins); err != nil {
+		return nil, err
+	}
 
 	// emit Event
 	ctx.EventManager().EmitEvent(

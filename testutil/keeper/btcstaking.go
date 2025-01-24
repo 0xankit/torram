@@ -37,6 +37,9 @@ func BtcstakingKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 		cdc,
 		runtime.NewKVStoreService(storeKey),
 		log.NewNopLogger(),
+		nil,
+		nil,
+		nil,
 		authority.String(),
 	)
 

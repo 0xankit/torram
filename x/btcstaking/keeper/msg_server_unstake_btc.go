@@ -26,6 +26,14 @@ func (k msgServer) UnstakeBtc(goCtx context.Context, msg *types.MsgUnstakeBtc) (
 	utxo.IsStaked = false
 	k.Keeper.SetUTXO(ctx, utxo)
 
+	// TODO: can use hooks to unstake after it is saved in the store instead of doing it here
+	// burn the UTXO with the staking amount
+	var burnCoins sdk.Coins
+	burnCoins = burnCoins.Add(utxo.Amount)
+	if err := k.Keeper.bankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
+		return nil, err
+	}
+
 	// emit Event
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

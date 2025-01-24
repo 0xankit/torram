@@ -56,7 +56,7 @@ Unhappy Path: If the staker behaves maliciously, e.g., participates in double-sp
 
 ### TO Stake
 ```
-torram tx btcstaking stake "0de9390a2da201181d3f4250eedfc88574f074c78672382dcee4d44c2f5222fe" 1 --from user
+torramd tx btcstaking stake-btc "0de9390a2da201181d3f4250eedfc88574f074c78672382dcee4d44c2f5222fe" 1 --from alice
 ```
 
 
