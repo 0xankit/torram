@@ -3,12 +3,13 @@ validation: sovereign
 accounts:
 - name: alice
   coins:
-  - 2000000trm
-  - 200000000stake
+  - 10000000000trm
+  mnemonic: survey chunk bamboo connect kiss grid crunch purpose also regular oyster attitude fault meat prevent metal wolf seed alarm lend hurry grow violin slender
 - name: bob
   coins:
   - 1000000trm
-  - 100000000stake
+  mnemonic: decade enlist aspect canoe city prosper nose grief oven essence dinosaur air model dismiss valley congress situate joy envelope penalty save barrel hedgehog humble
+
 client:
   openapi:
     path: docs/static/openapi.yml
@@ -16,13 +17,19 @@ faucet:
   name: bob
   coins:
   - 500trm
-  - 100000stake
+genesis:
+  app_state:
+    staking:
+      params:
+        bond_denom: "trm" # The satoshi denomination
+        max_validators: 100
+        unbonding_time: 1814400s
 validators:
 - name: alice
-  bonded: 100000000stake
+  bonded: 100000000trm
 - name: validator1
-  bonded: 100000000stake
+  bonded: 100000000trm
 - name: validator2
-  bonded: 200000000stake
+  bonded: 200000000trm
 - name: validator3
-  bonded: 300000000stake
+  bonded: 300000000trm
